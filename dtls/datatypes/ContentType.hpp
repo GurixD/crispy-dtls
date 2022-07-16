@@ -4,7 +4,7 @@
 
 // https://datatracker.ietf.org/doc/html/rfc5246#section-6.2.1
 
-namespace dtls
+namespace crispy
 {
     enum class ContentType : std::uint8_t
     {

@@ -4,7 +4,7 @@
 
 // https://datatracker.ietf.org/doc/html/rfc5246#appendix-A.2
 
-namespace dtls
+namespace crispy
 {
     enum class ChangeCipherSpecEnum : std::uint8_t
     {

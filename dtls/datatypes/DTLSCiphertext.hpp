@@ -9,7 +9,7 @@
 
 // https://datatracker.ietf.org/doc/html/rfc6347#section-4.3.1
 
-namespace dtls
+namespace crispy
 {
     struct DTLSCiphertext
     {

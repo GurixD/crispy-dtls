@@ -16,7 +16,7 @@
 //         ClientDiffieHellmanPublic;
 // } exchange_keys;
 
-namespace dtls
+namespace crispy
 {
     // rsa
     struct ClientKeyExchangeEncryptedPreMasterSecret

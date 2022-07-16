@@ -10,7 +10,7 @@
 //     case explicit: opaque DH_Yc<1..2 ^ 16 - 1>;
 // } dh_public;
 
-namespace dtls
+namespace crispy
 {
 	struct ClientDiffieHellmanPublicImplicit
 	{

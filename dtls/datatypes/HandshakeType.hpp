@@ -4,7 +4,7 @@
 
 // https://datatracker.ietf.org/doc/html/rfc6347#section-4.3.2
 
-namespace dtls
+namespace crispy
 {
     enum class HandshakeType : std::uint8_t
     {

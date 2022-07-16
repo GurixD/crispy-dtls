@@ -9,7 +9,7 @@
 
 // https://datatracker.ietf.org/doc/html/rfc5246#appendix-A.4.1
 
-namespace dtls
+namespace crispy
 {
     struct Random
     {
@@ -21,12 +21,8 @@ namespace dtls
             std::ostringstream ss;
             ss << "Random: " << std::endl
                << "\tTime: " << this->gmt_unix_time.get() << std::endl;
-            ss << "\tRandom: " << std::hex;
-            for (auto b : this->random_bytes)
-            {
-                ss << static_cast<std::uint16_t>(b) << " ";
-            }
-            ss << std::dec << std::endl;
+            ss << "\tRandom: " << Helper::byteArrayToString(this->random_bytes, sizeof(this->random_bytes));
+            return ss.str();
         }
 
         static Random fromData(DataReader &dr)
@@ -35,6 +31,8 @@ namespace dtls
 
             random.gmt_unix_time = dr.read<bigendian::uint32>();
             dr.read(random.random_bytes, sizeof(random.random_bytes));
+
+            return random;
         }
     };
 }

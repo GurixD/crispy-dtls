@@ -1,8 +1,9 @@
 ﻿cmake_minimum_required(VERSION 3.21)
 
-project("SocketReceiveOrder")
+project("crispy-dtls")
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+set(CXX_STANDARD_REQUIRED ON)
 
 find_package(Boost REQUIRED)
 
@@ -17,10 +18,6 @@ set(SERVER_KEY "${CERTS}/private/server-key.pem")
 set(CA_CERT "${CERTS}/public/ca-cert.pem")
 
 if(WIN32)
-	if(NOT EXISTS ${OPENSSL_SSL})
-		message(FATAL_ERROR "Variable OPENSSL_SSL is not set. Set it in CMakeUserPresets.json")
-	endif()
-
 	if(NOT EXISTS ${OPENSSL_CRYPTO})
 		message(FATAL_ERROR "Variable OPENSSL_CRYPTO is not set. Set it in CMakeUserPresets.json")
 	endif()
@@ -44,10 +41,9 @@ set_target_properties("OpenSSL_Crypto" PROPERTIES INTERFACE_INCLUDE_DIRECTORIES 
 add_compile_definitions(CA_CERT="${CA_CERT}" SERVER_CERT="${SERVER_CERT}" SERVER_KEY="${SERVER_KEY}")
 
 
-add_subdirectory(common)
 add_subdirectory("dtls")
 add_subdirectory("server")
 
-target_link_libraries("dtls" PRIVATE common)
 target_link_libraries("dtls" PRIVATE "OpenSSL_Crypto")
-target_link_libraries("dtls" PRIVATE Boost::boost)
+target_link_libraries("dtls" PUBLIC Boost::boost)
+target_link_libraries("server" PRIVATE "dtls")

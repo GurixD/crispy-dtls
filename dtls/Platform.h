@@ -1,5 +1,6 @@
 #pragma once
 
+
 // Define platform macros
 #ifdef __linux__
 #define PLATFORM_LINUX

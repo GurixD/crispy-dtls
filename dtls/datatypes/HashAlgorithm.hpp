@@ -4,7 +4,7 @@
 
 // https://datatracker.ietf.org/doc/html/rfc5246#appendix-A.4.1
 
-namespace dtls
+namespace crispy
 {
     enum class HashAlgorithm : std::uint8_t
     {

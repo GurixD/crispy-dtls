@@ -4,7 +4,7 @@
 
 // https://datatracker.ietf.org/doc/html/rfc5246#appendix-A.3
 
-namespace dtls
+namespace crispy
 {
     // regex replace "\((\d+)\)" => " = $1"
     enum class AlertDescription : std::uint8_t
