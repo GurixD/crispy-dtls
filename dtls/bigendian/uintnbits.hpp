@@ -11,7 +11,10 @@
 
 namespace bigendian 
 {
-
+	/// <summary>
+	/// Unsigned int n bits
+	/// </summary>
+	/// <typeparam name="Bits">Number of bits (requires Bits % 8 == 0 && Bits >= 16)</typeparam>
 	template<std::size_t Bits> requires (Bits % 8 == 0 && Bits >= 16)
 	class uintnbits
 	{
@@ -44,9 +47,9 @@ namespace bigendian
 		}
 
 		template<Integer T> requires (sizeof(T) >= sizeof(data))
-		T get()
+		T get() const
 		{
-			T x = 0;
+			T x{};
 
 			constexpr std::size_t  diff = sizeof(T) - sizeof(data);
 

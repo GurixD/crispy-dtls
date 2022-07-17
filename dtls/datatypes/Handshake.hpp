@@ -5,6 +5,9 @@
 #include "../bigendian/integer.hpp"
 #include <vector>
 #include <cstddef>
+#include "../DataReader.hpp"
+#include <tuple>
+#include <string>
 
 // https://datatracker.ietf.org/doc/html/rfc6347#section-4.3.2
 
@@ -33,5 +36,10 @@ namespace crispy
         // } body;
 
         std::vector<std::byte> body;
+
+
+        std::string toString() const;
+
+        static std::tuple<Handshake, bool> fromData(DataReader& dr);
     };
 }

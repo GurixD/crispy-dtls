@@ -28,6 +28,9 @@ namespace crispy
 
         bool ok = dr.checkTransaction();
 
+        if (!ok)
+            return { clientHello, false };
+
         if (dr.left() > 0)
         {
             dr.startTransaction();
@@ -57,27 +60,31 @@ namespace crispy
         return {clientHello, ok};
     }
 
-    std::string ClientHello::toString()
+    std::string ClientHello::toString() const
     {
         std::ostringstream ss;
 
-        //ProtocolVersion client_version;
-        //Random random;
-        //SessionID session_id;
-        //std::uint8_t cookie_length;                         // <0..2 ^ 8 - 1>
-        //std::vector<std::byte> cookie;
-        //bigendian::uint16 cipher_suites_length;             // <2..2 ^ 16 - 1>
-        //std::vector<CipherSuite> cipher_suites;
-        //std::uint8_t compression_methods_length;            // <1..2 ^ 8 - 1>
-        //std::vector<CompressionMethod> compression_methods;
-        //bigendian::uint16 extensions_length;                // <0..2 ^ 16 - 1>
-        //std::vector<Extension> extensions;
-
-
         ss << "ClientHello: " << std::endl;
-        ss << "ProtocolVersion: " << static_cast<std::uint16_t>(this->client_version.major) << "." << static_cast<std::uint16_t>(this->client_version.minor) << std::endl;
-        ss << this->random.toString() << std::endl;
-
+        ss << this->client_version.toString();
+        ss << this->random.toString();
+        ss << this->session_id.toString();
+        ss << "Cookie length: " << static_cast<std::uint32_t>(this->cookie_length) << std::endl;
+        ss << "Cookie: " << Helper::byteArrayToString(this->cookie.data(), this->cookie.size());
+        ss << "Cipher suites length: " << this->cipher_suites_length.get() << std::endl;
+        for (const auto& cipherSuite : this->cipher_suites)
+        {
+            ss << cipherSuite.toString();
+        }
+        ss << "Compression methods length: " << static_cast<std::uint32_t>(this->compression_methods_length) << std::endl;
+        for (const auto& compressionMethod : this->compression_methods)
+        {
+            ss << static_cast<std::uint32_t>(compressionMethod) << std::endl;
+        }
+        ss << "Extensions length :" << this->extensions_length.get() << std::endl;
+        for (const auto& extension : this->extensions)
+        {
+            ss << extension.toString();
+        }
 
         return ss.str();
     }

@@ -19,7 +19,6 @@
 
 namespace crispy
 {
-
     struct ClientHello
     {
         ProtocolVersion client_version;
@@ -37,7 +36,7 @@ namespace crispy
         static std::tuple<ClientHello, bool> fromData(DataReader& dr);
         
 
-        std::string toString();
+        std::string toString() const;
     };
 
 }

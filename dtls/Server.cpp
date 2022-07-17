@@ -3,6 +3,8 @@
 #include <iostream>
 #include "Helper.hpp"
 #include "datatypes/DTLSPlaintext.hpp"
+#include "datatypes/Handshake.hpp"
+#include "datatypes/ClientHello.hpp"
 #include "datatypes/SecurityParameters.hpp"
 #include <cstddef>
 
@@ -88,29 +90,42 @@ namespace crispy
 
 	void Server::verifyClient(InternetSocketAddress& from, int fromlen, DataReader& dr, Clients& clients)
 	{
-		//DTLSCiphertext<GenericBlockCipher> cipher;
-		//cipher.type = static_cast<ContentType>(dr.read<std::uint8_t>());
-		//cipher.version.major = dr.read<std::uint8_t>();
-		//cipher.version.minor = dr.read<std::uint8_t>();
-		//cipher.epoch = dr.read<bigendian::uint16>();
-		//cipher.sequence_number = dr.read<bigendian::uint48>();
-		//cipher.length = dr.read<bigendian::uint16>();
-
 		// Should only receive ClientHello here
 
 		SecurityParameters sp{ ConnectionEnd::server, CipherType::block };
 
 		while (dr.left() > 0)
 		{
-			auto [dtlspt, ok] = DTLSPlaintext::fromData(dr);
-			if (!ok)
+			auto [plainText, plainTextOk] = DTLSPlaintext::fromData(dr);
+			if (!plainTextOk)
 				Helper::error("DTLSPlaintext from data failed");
-			else
-				std::cout << dtlspt.toString() << std::endl;
 
-			if (dtlspt.type != ContentType::handshake)
-				Helper::error("Type isnt handshake failed");
+			std::cout << plainText.toString() << std::endl;
 
+			if (plainText.type != ContentType::handshake)
+				Helper::error("ContentType isnt handshake");
+
+			DataReader hansdshakeReader(plainText.fragment.data(), plainText.fragment.size());
+			auto [handshake, handshakeOk] = Handshake::fromData(hansdshakeReader);
+
+
+			if (!handshakeOk)
+				Helper::error("Handshake from data failed");
+
+			std::cout << handshake.toString() << std::endl;
+
+			if(handshake.msg_type != HandshakeType::client_hello)
+				Helper::error("HandshakeType isnt client_hello");
+
+			DataReader clientHelloReader(handshake.body.data(), handshake.body.size());
+			auto [clientHello, clientHelloOk] = ClientHello::fromData(clientHelloReader);
+
+			if(!clientHelloOk)
+				Helper::error("ClientHello from data failed");
+
+			std::cout << clientHello.toString() << std::endl;
+
+			exit(0);
 		}
 		//ContentType type = static_cast<ContentType>(dr.read<std::uint8_t>());
 		//if (type != ContentType::handshake)

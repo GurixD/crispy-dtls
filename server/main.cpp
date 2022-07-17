@@ -9,8 +9,8 @@ int main()
 
 	constexpr int port = 23232;
 
-	//crispy::Server server(onConnected, onMessage, onDisconnected);
-	//server.start(port);
+	crispy::Server server(onConnected, onMessage, onDisconnected);
+	server.start(port);
 
 	return 0;
 }

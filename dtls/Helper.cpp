@@ -10,7 +10,7 @@
 
 namespace crispy
 {
-	std::string Helper::byteArrayToString(std::byte* arr, std::size_t size)
+	std::string Helper::byteArrayToString(const std::byte* arr, std::size_t size)
 	{
 		std::ostringstream oss;
 		oss << std::hex;

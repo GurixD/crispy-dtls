@@ -43,7 +43,7 @@ namespace crispy
             return {dtlspt, ok};
         }
 
-        std::string toString()
+        std::string toString() const
         {
             std::ostringstream ss;
             ss << "DTLSPlaintext: " << std::endl;

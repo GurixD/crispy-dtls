@@ -1,5 +1,7 @@
 #include "CipherSuite.hpp"
 
+#include <sstream>
+
 namespace crispy
 {    
     inline constexpr CipherSuite CipherSuite::TLS_NULL_WITH_NULL_NULL = {0x00, 0x00};
@@ -52,4 +54,12 @@ namespace crispy
 
 		return false;
 	}
+
+	std::string CipherSuite::toString() const
+	{
+		std::ostringstream oss;
+		oss << "Cipher suite: [" << static_cast<std::uint32_t>(this->cipher_suite[0]) << ", " << static_cast<std::uint32_t>(this->cipher_suite[1]) << "]" << std::endl;
+		return oss.str();
+	}
+
 }

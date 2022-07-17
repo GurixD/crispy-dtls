@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <algorithm>
 #include <cstring>
+#include <string>
 
 // https://datatracker.ietf.org/doc/html/rfc5246#appendix-A.4.1
 // https://datatracker.ietf.org/doc/html/rfc5246#appendix-A.5
@@ -53,5 +54,7 @@ namespace crispy
 
 		static const CipherSuite SupportedCipherSuites[];
 		static constexpr bool isSupported(CipherSuite cipherSuite);
+
+		std::string toString() const;
 	};
 }
