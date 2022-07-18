@@ -12,7 +12,7 @@ namespace crispy
         clientHello.client_version.major = dr.read<std::uint8_t>();
         clientHello.client_version.minor = dr.read<std::uint8_t>();
 
-        clientHello.random.fromData(dr);
+        clientHello.random = Random::fromData(dr);
 
         clientHello.session_id.session_id_length = dr.read<std::uint8_t>();
         dr.read(clientHello.session_id.session_id, clientHello.session_id.session_id_length);
@@ -80,7 +80,7 @@ namespace crispy
         {
             ss << static_cast<std::uint32_t>(compressionMethod) << std::endl;
         }
-        ss << "Extensions length :" << this->extensions_length.get() << std::endl;
+        ss << "Extensions length: " << this->extensions_length.get() << std::endl;
         for (const auto& extension : this->extensions)
         {
             ss << extension.toString();

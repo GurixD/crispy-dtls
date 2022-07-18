@@ -27,20 +27,20 @@ namespace crispy
 
         static std::tuple<DTLSPlaintext, bool> fromData(DataReader &dr)
         {
-            DTLSPlaintext dtlspt{};
+            DTLSPlaintext plainText{};
             dr.startTransaction();
 
-            dtlspt.type = static_cast<ContentType>(dr.read<std::uint8_t>());
-            dtlspt.version.major = dr.read<std::uint8_t>();
-            dtlspt.version.minor = dr.read<std::uint8_t>();
-            dtlspt.epoch = dr.read<bigendian::uint16>();
-            dtlspt.sequence_number = dr.read<bigendian::uint48>();
-            dtlspt.length = dr.read<bigendian::uint16>();
-            dtlspt.fragment = std::vector<std::byte>(dtlspt.length.get());
-            dr.read(dtlspt.fragment);
+            plainText.type = static_cast<ContentType>(dr.read<std::uint8_t>());
+            plainText.version.major = dr.read<std::uint8_t>();
+            plainText.version.minor = dr.read<std::uint8_t>();
+            plainText.epoch = dr.read<bigendian::uint16>();
+            plainText.sequence_number = dr.read<bigendian::uint48>();
+            plainText.length = dr.read<bigendian::uint16>();
+            plainText.fragment = std::vector<std::byte>(plainText.length.get());
+            dr.read(plainText.fragment);
 
             bool ok = dr.checkTransaction();
-            return {dtlspt, ok};
+            return {plainText, ok};
         }
 
         std::string toString() const

@@ -11,7 +11,7 @@ namespace crispy
 		std::ostringstream oss;
 
 		oss << "Handshake: " << std::endl;
-		oss << "Message type: " << static_cast<std::uint8_t>(this->msg_type) << std::endl;
+		oss << "Message type: " << static_cast<std::uint32_t>(this->msg_type) << std::endl;
 		oss << "Length: " << this->length.get<std::uint32_t>() << std::endl;
 		oss << "Message sequence: " << this->message_seq.get() << std::endl;
 		oss << "Fragment offset: " << this->fragment_offset.get<std::uint32_t>() << std::endl;

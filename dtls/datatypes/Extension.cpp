@@ -56,7 +56,7 @@ namespace crispy
         std::ostringstream oss;
         oss << "Extension: " << std::endl;
         oss << "\tType: " << this->extension_type.get() << std::endl;
-        oss << "Data length\t" << this->extension_data_length.get() << std::endl;
+        oss << "\tData length: " << this->extension_data_length.get() << std::endl;
         oss << "\tData: " << Helper::byteArrayToString(this->extension_data.data(), this->extension_data.size()) << std::endl;
         return oss.str();
     }
