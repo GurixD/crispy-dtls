@@ -21,9 +21,7 @@ namespace crispy
 
         static const ExtensionType SupportedExtensions[];
         static const ExtensionType RecommandedExtensions[];
-        static constexpr bool isSupported(ExtensionType extension);
-        static constexpr bool isRecommanded(ExtensionType extension);
+        static bool isSupported(ExtensionType extension);
+        static bool isRecommanded(ExtensionType extension);
     };
-
-    
 }

@@ -3,7 +3,5 @@
 	"name": "socket-receive-order",
 	"version-string": "1.0.0",
 	"dependencies": [
-		"boost-container-hash",
-		"boost-asio"
 	]
 }

@@ -7,7 +7,8 @@ namespace crispy
 {
     inline constexpr ExtensionType Extension::SupportedExtensions[] =
     {
-        ExtensionType::renegotiation_info };
+        ExtensionType::renegotiation_info 
+    };
 
     inline constexpr ExtensionType Extension::RecommandedExtensions[] =
     {
@@ -57,11 +58,14 @@ namespace crispy
         oss << "Extension: " << std::endl;
         oss << "\tType: " << this->extension_type.get() << std::endl;
         oss << "\tData length: " << this->extension_data_length.get() << std::endl;
-        oss << "\tData: " << Helper::byteArrayToString(this->extension_data.data(), this->extension_data.size()) << std::endl;
+        oss << "\tData: " << Helper::byteArrayToString(this->extension_data.data(), this->extension_data.size());
+        oss << std::boolalpha;
+        oss << "\tIs supported: " << Extension::isSupported(static_cast<ExtensionType>(this->extension_type.get())) << std::endl;
+        oss << "\tIs recommanded: " << Extension::isRecommanded(static_cast<ExtensionType>(this->extension_type.get())) << std::endl;
         return oss.str();
     }
 
-    inline constexpr bool Extension::isSupported(ExtensionType extension)
+    bool Extension::isSupported(ExtensionType extension)
     {
         for (auto ext : SupportedExtensions)
         {
@@ -71,7 +75,7 @@ namespace crispy
         return false;
     }
 
-    inline constexpr bool Extension::isRecommanded(ExtensionType extension)
+    bool Extension::isRecommanded(ExtensionType extension)
     {
         for (auto ext : RecommandedExtensions)
         {

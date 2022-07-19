@@ -1,7 +1,5 @@
 #include "InternetSocketAddressHasher.hpp"
 
-#include <boost/container_hash/hash.hpp>
-
 namespace crispy
 {
 	std::size_t InternetSocketAddressHasher::operator()(const InternetSocketAddress& isa) const
@@ -18,7 +16,7 @@ namespace crispy
 			unsigned long address = in->sin_addr.s_addr;
 
 			h = std::hash<unsigned short>{}(port);
-			boost::hash_combine(h, address);
+			Helper::hashCombine(h, address);
 
 			break;
 		}
@@ -37,7 +35,7 @@ namespace crispy
 			h = std::hash<unsigned short>{}(port);
 			for (int i = 0; i < size; ++i)
 			{
-				boost::hash_combine(h, address[i]);
+				Helper::hashCombine(h, address[i]);
 			}
 
 			break;

@@ -5,8 +5,6 @@ project("crispy-dtls")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CXX_STANDARD_REQUIRED ON)
 
-find_package(Boost REQUIRED)
-
 if(WIN32)
     link_libraries("ws2_32")
 endif()
@@ -45,5 +43,4 @@ add_subdirectory("dtls")
 add_subdirectory("server")
 
 target_link_libraries("dtls" PRIVATE "OpenSSL_Crypto")
-target_link_libraries("dtls" PUBLIC Boost::boost)
 target_link_libraries("server" PRIVATE "dtls")

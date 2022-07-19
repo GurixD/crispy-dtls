@@ -2,6 +2,7 @@
 
 #include <string>
 #include <cstddef>
+#include <functional>
 
 namespace crispy
 {
@@ -16,5 +17,15 @@ namespace crispy
 		static std::string socketError();
 		static void error(std::string message);
 		static void printSocketError(std::string message);
+
+		template <typename T>
+		static void hashCombine(std::size_t& seed, const T& v);
 	};
+
+	template<typename T>
+	inline void Helper::hashCombine(std::size_t& seed, const T& v)
+	{
+		std::hash<T> hasher;
+		seed ^= hasher(v) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+	}
 }
