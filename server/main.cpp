@@ -25,9 +25,13 @@ void testTimer()
 {
 	using Timer = crispy::timer::Timer;
 	using namespace std::chrono_literals;
+
 	Timer::setTimeout(std::bind(print, "Once"), 1s);
-	Timer::setInterval(std::bind(print, "Always"), 2s);
+	Timer t = Timer::setInterval(std::bind(print, "Always"), 2s);
 	Timer::setNTimeout(std::bind(print, "Thrice"), 3s, 3);
+
+	Timer::setTimeout([&t] {t.stop(); }, 10s);
+
 	(void)std::getchar();
 }
 
