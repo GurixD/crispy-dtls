@@ -6,6 +6,7 @@
 #include "datatypes/Handshake.hpp"
 #include "datatypes/ClientHello.hpp"
 #include "datatypes/SecurityParameters.hpp"
+#include <chrono>
 #include <cstddef>
 
 namespace crispy
@@ -15,7 +16,9 @@ namespace crispy
 		onMessage(onMessage),
 		onDisconnected(onDisconnected),
 		fd(INVALID_SOCKET),
-		port(0)
+		port(0),
+		cookie(),
+		cookieTimer(Timer::setInterval(std::bind(&Cookie<32>::rotateCookie, &this->cookie), std::chrono::minutes(1), false))
 	{
 #ifdef PLATFORM_WINDOWS
 		std::memset(&this->wsaData, 0, sizeof(this->wsaData));
@@ -24,8 +27,9 @@ namespace crispy
 
 	void Server::start(std::uint16_t port)
 	{
-		this->port = port;
+		this->cookieTimer.start();
 
+		this->port = port;
 
 #ifdef PLATFORM_WINDOWS
 		WSAData wsaData;
@@ -92,13 +96,14 @@ namespace crispy
 	{
 		// Should only receive ClientHello here
 
-		SecurityParameters sp{ ConnectionEnd::server, CipherType::block };
-
 		while (dr.left() > 0)
 		{
 			auto [plainText, plainTextOk] = DTLSPlaintext::fromData(dr);
 			if (!plainTextOk)
 				Helper::error("DTLSPlaintext from data failed");
+
+			if(plainText.version != ProtocolVersion::DTLS1_0)
+				Helper::error("DTLSPlaintext version is not dtls1_0");
 
 			std::cout << plainText.toString() << std::endl;
 
@@ -125,32 +130,9 @@ namespace crispy
 
 			std::cout << clientHello.toString() << std::endl;
 
+
+
 			exit(0);
 		}
-		//ContentType type = static_cast<ContentType>(dr.read<std::uint8_t>());
-		//if (type != ContentType::handshake)
-		//	dtls::Helper::error("Type must be handshake for new clients");
-
-		//ProtocolVersion pv{};
-		//pv.major = dr.read<std::uint8_t>();
-		//pv.minor = dr.read<std::uint8_t>();
-		//if(pv != ProtocolVersion::DTLS1_0)
-		//	dtls::Helper::error("Version must be 1.0 for new clients");
-		//
-		//bigendian::uint16 epoch = dr.read<bigendian::uint16>();
-		//if(epoch.get() != 0)
-		//	dtls::Helper::error("Epoch must be 0 for new clients");
-
-		//std::uint64_t seqNumber = dr.read<bigendian::uint48>().get<std::uint64_t>();
-		////if(seqNumber != 0 && seqNumber != 1)
-		////	dtls::Helper::error("Sequence number must be 0 or 1 for new clients");
-
-		//bigendian::uint16 handshakeLen = dr.read<bigendian::uint16>();
-		//if(handshakeLen.get() < ClientHello::minSize())
-		//	dtls::Helper::error("Length is not enough for HelloClient for new clients");
-
-		//HandshakeType handshakeType = static_cast<HandshakeType>(dr.read<std::uint8_t>());
-		//if(handshakeType != HandshakeType::client_hello)
-		//	dtls::Helper::error("HandshakeType must be HelloClient for new clients");
 	}
 }

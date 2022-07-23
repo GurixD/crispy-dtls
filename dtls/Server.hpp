@@ -9,6 +9,8 @@
 #include "InternetSocketAddressHasher.hpp"
 #include "ClientData.hpp"
 #include "DataReader.hpp"
+#include "Cookie.hpp"
+#include "timer/Timer.hpp"
 
 namespace crispy
 {
@@ -16,6 +18,7 @@ namespace crispy
     using OnMessage = std::function<void(void)>;
     using OnDisconnected = std::function<void(void)>;
     using Clients = std::unordered_map<InternetSocketAddress, ClientData, InternetSocketAddressHasher>;
+    using Timer = timer::Timer;
 
     class Server
     {
@@ -24,6 +27,9 @@ namespace crispy
         OnMessage onMessage;
         OnDisconnected onDisconnected;
         Clients clients;
+        Cookie<32> cookie;
+        Timer cookieTimer;
+
 
         Socket fd;
         std::uint16_t port;

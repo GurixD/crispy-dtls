@@ -42,5 +42,5 @@ add_compile_definitions(CA_CERT="${CA_CERT}" SERVER_CERT="${SERVER_CERT}" SERVER
 add_subdirectory("dtls")
 add_subdirectory("server")
 
-target_link_libraries("dtls" PRIVATE "OpenSSL_Crypto")
+target_link_libraries("dtls" PUBLIC "OpenSSL_Crypto")
 target_link_libraries("server" PRIVATE "dtls")

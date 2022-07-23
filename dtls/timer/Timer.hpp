@@ -22,8 +22,11 @@ namespace crispy
 		{
 		private:
 			std::uint32_t id;
+			Action action;
+			Duration duration;
+			std::int64_t n;
 
-			explicit Timer(std::uint32_t id);
+			explicit Timer(Action action = nullptr, Duration duration = Duration::zero(), std::int64_t n = 0);
 
 			std::uint32_t getId();
 
@@ -45,12 +48,13 @@ namespace crispy
 
 			friend class TimerDestructor;
 		public:
+			void start();
 			void stop();
 			bool isRunning();
 
-			static Timer setTimeout(Action action, Duration duration);
-			static Timer setNTimeout(Action action, Duration duration, std::int64_t n);
-			static Timer setInterval(Action action, Duration duration);
+			static Timer setTimeout(Action action, Duration duration, bool startImmediatly = true);
+			static Timer setNTimeout(Action action, Duration duration, std::int64_t n, bool startImmediatly = true);
+			static Timer setInterval(Action action, Duration duration, bool startImmediatly = true);
 		};
 	}
 }

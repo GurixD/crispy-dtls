@@ -3,6 +3,9 @@
 #include <string>
 #include <cstddef>
 #include <functional>
+#include <tuple>
+#include "socketstuff.h"
+#include "AddrInfo.hpp"
 
 namespace crispy
 {
@@ -10,14 +13,39 @@ namespace crispy
 	{
 	public:
 		/// <summary>
-		/// Display an error and exit
+		/// Convert data as byte* format to string
 		/// </summary>
-		/// <param name="message">Message to display</param>
 		static std::string byteArrayToString(const std::byte* arr, std::size_t size);
+
+		/// <summary>
+		/// Get the string of the last socket error (WSAGetLastError / errno)
+		/// </summary>
 		static std::string socketError();
+
+		/// <summary>
+		/// Print to cerr and exit
+		/// </summary>
+		/// <param name="message">Message to print</param>
 		static void error(std::string message);
+
+		/// <summary>
+		/// Litteraly error(message + socketError());
+		/// </summary>
+		/// <param name="message">Message to print</param>
 		static void printSocketError(std::string message);
 
+		/// <summary>
+		/// Return information of inet/inet6 form sockaddr_storage
+		/// </summary>
+		/// <param name="ss">Storage to get info from</param>
+		/// <returns>[Data containing address, size of data, port]</returns>
+		static AddrInfo getAddrPort(sockaddr_storage ss);
+
+		/// <summary>
+		/// Combine hash like boost
+		/// </summary>
+		/// <param name="seed">Current hash</param>
+		/// <param name="v"></param>
 		template <typename T>
 		static void hashCombine(std::size_t& seed, const T& v);
 	};

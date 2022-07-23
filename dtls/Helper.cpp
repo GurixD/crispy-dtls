@@ -6,6 +6,8 @@
 #include <iostream>
 #include <sstream>
 #include <iomanip>
+#include <cstring>
+#include <cstdint>
 
 
 namespace crispy
@@ -64,5 +66,43 @@ namespace crispy
 	void Helper::printSocketError(std::string message)
 	{
 		error(message + socketError());
+	}
+
+	AddrInfo Helper::getAddrPort(sockaddr_storage ss)
+	{
+		AddrInfo addrinfo{};
+
+		switch (ss.ss_family)
+		{
+		case AF_INET:
+		{
+			const sockaddr_in* in = reinterpret_cast<const sockaddr_in*>(&ss);
+
+			addrinfo.port = in->sin_port;
+			addrinfo.address.size = sizeof(in->sin_addr.s_addr);
+			std::uint32_t address = in->sin_addr.s_addr;
+
+			std::memcpy(addrinfo.address.data, &address, addrinfo.address.size);
+
+			break;
+		}
+
+		case AF_INET6:
+		{
+
+			const sockaddr_in6* in6 = reinterpret_cast<const sockaddr_in6*>(&ss);
+
+			addrinfo.port = in6->sin6_port;
+			addrinfo.address.size = sizeof(in6->sin6_addr.s6_addr);
+
+			const std::byte* address = reinterpret_cast<const std::byte*>(in6->sin6_addr.s6_addr);
+
+			std::memcpy(addrinfo.address.data, address, addrinfo.address.size);
+
+			break;
+		}
+		}
+
+		return addrinfo;
 	}
 }

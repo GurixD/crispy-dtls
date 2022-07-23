@@ -16,7 +16,7 @@ namespace crispy
 		// Destructor order is in reverse order of constructor so this needs to be constructed in last
 		TimerDestructor Timer::timerDestructor = [] {return TimerDestructor{}; }();
 
-		Timer::Timer(std::uint32_t id) : id(id)
+		Timer::Timer(Action action, Duration duration, std::int64_t n) : id(0), action(action), duration(duration), n(n)
 		{
 
 		}
@@ -45,6 +45,24 @@ namespace crispy
 			this->id = 0;
 		}
 
+		void Timer::start()
+		{
+			if (!isRunning())
+			{
+				TimePoint timePoint = now() + duration;
+
+				std::scoped_lock lock(multisetMutex);
+
+				auto id = firstFreeId();
+
+				auto it = timerFunctions.insert(std::make_tuple(timePoint, action, duration, n, id));
+				if (it == timerFunctions.begin())
+				{
+					cond.notify_one();
+				}
+			}
+		}
+
 		bool Timer::isRunning()
 		{
 			if (this->id == 0)
@@ -71,6 +89,8 @@ namespace crispy
 					auto [timer, func, duration, n, id] = *timerFunctions.begin();
 					auto status = cond.wait_until(conditionLock, timer);
 					conditionLock.unlock();
+
+					// Only call function if it was a timeout
 					if (status == std::cv_status::timeout)
 					{
 						// run method (call on other thread?)
@@ -142,35 +162,29 @@ namespace crispy
 			return findId(timer.getId());
 		}
 
-		Timer Timer::setNTimeout(Action action, Duration duration, std::int64_t n)
+		Timer Timer::setNTimeout(Action action, Duration duration, std::int64_t n, bool startImmediatly)
 		{
 			// Prevent negative values (except -1)
 			if (n <= 0 && n != -1)
-				return Timer(0);
+				return Timer{};
 
-			TimePoint timePoint = now() + duration;
+			Timer timer(action, duration, n);
 
-			std::scoped_lock lock(multisetMutex);
+			if (startImmediatly)
+				timer.start();
 
-			auto id = firstFreeId();
 
-			auto it = timerFunctions.insert(std::make_tuple(timePoint, action, duration, n, id));
-			if (it == timerFunctions.begin())
-			{
-				cond.notify_one();
-			}
-
-			return Timer(id);
+			return timer;
 		}
 
-		Timer Timer::setTimeout(Action action, Duration duration)
+		Timer Timer::setTimeout(Action action, Duration duration, bool startImmediatly)
 		{
-			return setNTimeout(action, duration, 1);
+			return setNTimeout(action, duration, 1, startImmediatly);
 		}
 
-		Timer Timer::setInterval(Action action, Duration duration)
+		Timer Timer::setInterval(Action action, Duration duration, bool startImmediatly)
 		{
-			return setNTimeout(action, duration, -1);
+			return setNTimeout(action, duration, -1, startImmediatly);
 		}
 	}
 }
